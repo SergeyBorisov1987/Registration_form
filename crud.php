@@ -14,7 +14,6 @@ $file = "";
 $fpath = "";
 $update = false;
 
-
 // Check datas from form (name, email, comment)
     if (isset($_POST['name']) && !empty($_POST['name']) && isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['text']) && !empty($_POST['text']) ){
         $userName = ucfirst(formValidator($_POST['name']));
@@ -39,7 +38,8 @@ $update = false;
     if (isset($_POST['submit'])){
         $sql = 'INSERT INTO crud (name, email, text, fname, file_path)
             VALUES (:name, :email, :text, :fname, :file_path)';
-        $params = ['name' => $userName, 'email' => $userEmail, 'text' => $userComment, 'fname' => $fileName, 'file_path' => $filePath];
+        $params = ['name' => $userName, 'email' => $userEmail, 
+                   'text' => $userComment, 'fname' => $fileName, 'file_path' => $filePath];
         $stmt = $pdo->prepare($sql);
             if($stmt->execute($params))
         header('Location: index.php');
@@ -47,7 +47,7 @@ $update = false;
 
 // Select command
     $sql = "SELECT id, name, email, text, fname, file_path FROM crud";
-    $stmt = $pdo->query($sql);
+        $stmt = $pdo->query($sql);
 
 // Delete command
     if (isset($_GET['delete'])){
@@ -80,7 +80,6 @@ $update = false;
         $updateName = ucfirst(formValidator($_POST['name']));
         $updateEmail = formValidator($_POST['email']);
         $updateComment = formValidator($_POST['text']);
-
         $updateNamefName = formValidator($_FILES ['file']['name']);
         $updateNamefPath = formValidator($_FILES ['file']['tmp_name']);
 
@@ -94,6 +93,5 @@ $update = false;
             $stmt->bindParam(':id', $id , PDO::PARAM_INT);
                 $stmt->execute(); 
             header('Location: index.php');
-
     }
 
