@@ -6,13 +6,21 @@ ini_set('display_errors', '1');
 require_once ('add/lib.php');
 require_once ('add/config.php');
 
-$id = 0;
-$user = "";
-$email = "";
-$comment = "";
-$file = "";
-$fpath = "";
-$update = false;
+    $id = 0;
+    $user = "";
+    $email = "";
+    $comment = "";
+    $file = "";
+    $fpath = "";
+    $update = false;
+
+    $useId = false;
+    $useName = '';
+    $useEmail = '';
+    $useComment = '';
+    $useFile = '';
+    $useFpath = '';
+    $showInfo = false;
 
 // Check datas from form (name, email, comment)
     if (isset($_POST['name']) && !empty($_POST['name']) && isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['text']) && !empty($_POST['text']) ){
@@ -41,22 +49,34 @@ $update = false;
         $params = ['name' => $userName, 'email' => $userEmail, 
                    'text' => $userComment, 'fname' => $fileName, 'file_path' => $filePath];
         $stmt = $pdo->prepare($sql);
-            if($stmt->execute($params))
+            if($stmt->execute($params)){}
         header('Location: index.php');
     }
 
 // Select command
-    $sql = "SELECT id, name, email, text, fname, file_path FROM crud";
+    $sql = "SELECT id, name FROM crud";
         $stmt = $pdo->query($sql);
+
+        if (isset($_GET['show'])){
+            $idUser = $_GET['show'];
+            $sql = "SELECT id, email, text, fname, file_path FROM crud WHERE id = '$idUser' Limit 1";
+            $statement = $pdo->query($sql);     
+                $show = $statement->fetch();
+                    $useId = $show['id'];
+                    $useEmail = $show['email'];
+                    $useComment = $show['text'];
+                    $useFile = $show['fname'];
+                    $useFpath = $show['file_path'];
+                    $showInfo = true;
+        }
 
 // Delete command
     if (isset($_GET['delete'])){
-        //$id = $_GET['delete'];
         $sql = "DELETE FROM crud WHERE id = :id";
         $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':id', $_GET['delete'], PDO::PARAM_INT);   
                 $stmt->execute();
-                    header('Location: index.php');
+                  header('Location: index.php');
     }
 
 // Edit command
@@ -80,16 +100,12 @@ $update = false;
         $updateName = ucfirst(formValidator($_POST['name']));
         $updateEmail = formValidator($_POST['email']);
         $updateComment = formValidator($_POST['text']);
-        $updateNamefName = formValidator($_FILES ['file']['name']);
-        $updateNamefPath = formValidator($_FILES ['file']['tmp_name']);
 
-        $sql = "UPDATE crud SET name = :name, email = :email, text = :text, fname = :fname, file_path = :file_path WHERE id = :id";
+        $sql = "UPDATE crud SET name = :name, email = :email, text = :text WHERE id = :id";
             $stmt = $pdo->prepare($sql);                                  
             $stmt->bindParam(':name', $updateName, PDO::PARAM_STR);
             $stmt->bindParam(':email', $updateEmail, PDO::PARAM_STR);
             $stmt->bindParam(':text', $updateComment, PDO::PARAM_STR);
-            $stmt->bindParam(':fname', $updateNamefName, PDO::PARAM_STR);
-            $stmt->bindParam(':file_path', $updateNamefPath, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id , PDO::PARAM_INT);
                 $stmt->execute(); 
             header('Location: index.php');

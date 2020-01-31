@@ -18,7 +18,6 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', '1');
 ?>
 <!--#################################################################################################################-->
-<!--#################################################################################################################-->
 <div class="container-fluid">
     <form  method="POST" action="crud.php" enctype="multipart/form-data">
         <div class="form-group">
@@ -36,7 +35,7 @@ ini_set('display_errors', '1');
         </div>
         <div class="custom-file">
             <label class="label" for="validationTextarea">Choose file</label>
-                <input type="file" name="file" class="custom-file-input" id="customFile" required>
+                <input type="file" name="file" class="custom-file-input" id="customFile" <?php if ($update == false) echo $reqire='required';?> >
             <label class="custom-file-label" for="customFile">Choose file</label>
         </div><br/><br/>
         
@@ -49,34 +48,30 @@ ini_set('display_errors', '1');
     <br/><br/><hr/>
 </div>
 <!--#################################################################################################################-->
-<!--#################################################################################################################-->
 <?php while ($row = $stmt->fetch()):?>
 <div class="card">
     <div class="card-header">
         <h4>CRUD</h4>
     </div>
-    <div class="card-body">
-        <blockquote class="blockquote mb-0">
-            <p><?php echo "Name of user: <b>". $row['name']."</b><br/>";?></p>
-        <?php  if(isset ($_GET['show'])): ?>
-            <p><?php echo "Email of user: <b>". $row['email']."</b><br/>";?></p>
-            <p><?php echo "Comment of user: <b>". $row['text']."</b><br/>";?></p>
-            <p><?php echo "Name of uploaded file: <b>". $row['fname']."</b><br/>";?></p>
-            <p><?php echo "Path of uploaded file: <b>". $row['file_path']."</b><br/>";?></p>
-        </blockquote>
-    </div>
-    <?php  endif; ?>
-    <div class="card-header">
-        <a href="index.php?show=<?php echo $row['id'];?>"><img src="icons/eye.png"/></a>  
-        <a href="index.php?edit=<?php echo $row['id'];?>"><img src="icons/pen.png"/></a>  
-        <a href="index.php?delete=<?php echo $row['id'];?>"><img src="icons/delete.png"/></a>
-    </div>
-
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                        <p><?php echo "Name of user: <b>". $row['name'] ."</b><br/>";?></p>
+                    <?php  if( $useId == $row['id']): ?>
+                        <p><?php echo "Email of user: <b>". $useEmail ."</b><br/>";?></p>
+                        <p><?php echo "Comment of user: <b>". $useComment ."</b><br/>";?></p>
+                        <p><?php echo "Name of uploaded file: <b>". $useFile ."</b><br/>";?></p>
+                        <p><?php echo "Path of uploaded file: <b>". $useFpath ."</b><br/>";?></p>
+                    <?php  endif;?>
+            </blockquote>
+        </div>
+        <div class="card-header">
+            <a href="index.php?show=<?php echo $row['id'];?>"><img src="icons/eye.png"/></a>  
+            <a href="index.php?edit=<?php echo $row['id'];?>"><img src="icons/pen.png"/></a>  
+            <a href="index.php?delete=<?php echo $row['id'];?>"><img src="icons/delete.png"/></a>
+        </div>
 </div>
 <?php endwhile;?>
 <!--#################################################################################################################-->
-<!--#################################################################################################################-->
-
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
