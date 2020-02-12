@@ -9,58 +9,49 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="add/style.css" type="text/css">
 
-    <title>CRUD</title>
+    <title>LogIn</title>
 </head>
 <body>
-<?php require_once ('crud.php');
-error_reporting(E_ALL);
-ini_set('display_startup_errors', 1);
-ini_set('display_errors', '1');
-?>
-<!--#################################################################################################################-->
-<div class="container-fluid">
-    <form  method="POST" action="crud.php" enctype="multipart/form-data">
-        <div class="form-group">
-            <label class="label" for="exampleInputEmail1">Name</label>
-                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                    <input type="text" name="name" value="<?php echo $user; ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Required for filling" required>
-        </div>
-        <div class="form-group">
-            <label class="label" for="exampleInputEmail1">Email</label>
-                <input type="email" name="email" value="<?php echo $email; ?>"  class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Required for filling" required>
-        </div>
-        <div class="mb-3">
-            <label class="label" for="validationTextarea">Comment</label>
-                <textarea class="form-control is-invalid" name="text" id="validationTextarea" placeholder="Required for filling" required><?php echo $comment; ?></textarea>
-        </div>
-        <div class="custom-file">
-            <label class="label" for="validationTextarea">Choose file</label>
-                <input type="file" name="file" class="custom-file-input" id="customFile" <?php if ($update == false) echo $reqire='required';?> >
-            <label class="custom-file-label" for="customFile">Choose file</label>
-        </div><br/><br/>
-        
-            <button type="submit" name="submit" class="btn btn-secondary">Submit</button>
-            <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
-        <?php if ($update == true): ?>
-            <button type="submit" name="update" class="btn btn-secondary">Update</button>
-        <?php endif; ?>
-    </form>
-    <br/><br/><hr/>
-</div>
+    <?php require_once ('logIn.php');
+        error_reporting(E_ALL);
+        ini_set('display_startup_errors', 1);
+        ini_set('display_errors', '1');
+    ?>
+    <div class="container-fluid">
+        <form  method="POST" action="logIn.php" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="label" for="exampleInputEmail1">Name</label>
+                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <input type="text" name="name" value="<?php echo $user; ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Put your name" required>
+            </div>
+            <div class="form-group">
+                <label class="label" for="exampleInputEmail1">Email</label>
+                    <input type="email" name="email" value="<?php echo $email; ?>" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Put your email" required>
+            </div>
+            <div class="form-group">
+                <label class="label" for="exampleInputPassword1">Password</label>
+                    <input type="password" name="password" value="<?php echo $password; ?>" class="form-control" id="exampleInputPassword1" placeholder="Put your Password" required>
+            </div>
+            <div class="custom-file">      
+                <button type="submit" name="submit" class="btn btn-secondary">Submit</button>
+                <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
+            <?php if ($update == true): ?>
+                <button type="submit" name="update" class="btn btn-secondary">Update</button>
+            <?php endif; ?>
+        </form>
+    </div><br/><br/><hr/>
 <!--#################################################################################################################-->
 <?php while ($row = $stmt->fetch()):?>
 <div class="card">
     <div class="card-header">
-        <h4>CRUD</h4>
+        <h4>USERS</h4>
     </div>
         <div class="card-body">
             <blockquote class="blockquote mb-0">
                         <p><?php echo "Name of user: <b>". $row['name'] ."</b><br/>";?></p>
                     <?php  if( $useId == $row['id']): ?>
                         <p><?php echo "Email of user: <b>". $useEmail ."</b><br/>";?></p>
-                        <p><?php echo "Comment of user: <b>". $useComment ."</b><br/>";?></p>
-                        <p><?php echo "Name of uploaded file: <b>". $useFile ."</b><br/>";?></p>
-                        <p><?php echo "Path of uploaded file: <b>". $useFpath ."</b><br/>";?></p>
+                        <p><?php echo "Hash password of user: <b>". $usePassword ."</b><br/>";?></p>
                     <?php  endif;?>
             </blockquote>
         </div>

@@ -9,30 +9,20 @@ require_once ('add/config.php');
     $id = 0;
     $user = "";
     $email = "";
-    $comment = "";
-    $file = "";
-    $fpath = "";
+    $password = "";
     $update = false;
 
     $useId = false;
     $useName = '';
     $useEmail = '';
-    $useComment = '';
-    $useFile = '';
-    $useFpath = '';
+    $usePassword = '';
     $showInfo = false;
 
 // Check datas from form (name, email, comment)
-    if (isset($_POST['name']) && !empty($_POST['name']) && isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['text']) && !empty($_POST['text']) ){
+    if (isset($_POST['name']) && !empty($_POST['name']) && isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['password']) && !empty($_POST['password']) ){
         $userName = ucfirst(formValidator($_POST['name']));
         $userEmail = formValidator($_POST['email']);
-        $userComment = formValidator($_POST['text']);
-    }
-
-// Check uploaded file
-    if (!empty($_FILES)){
-        $fileName = formValidator($_FILES ['file']['name']);
-        $filePath = formValidator($_FILES ['file']['tmp_name']);
+        $usePassword = md5 (formValidator($_POST['password']));
     }
 
 // Data Bases connection
@@ -44,35 +34,33 @@ require_once ('add/config.php');
 
 // Insert command
     if (isset($_POST['submit'])){
-        $sql = 'INSERT INTO crud (name, email, text, fname, file_path)
-            VALUES (:name, :email, :text, :fname, :file_path)';
+        $sql = 'INSERT INTO logIn (name, email, password)
+                VALUES (:name, :email, :password)';
         $params = ['name' => $userName, 'email' => $userEmail, 
-                   'text' => $userComment, 'fname' => $fileName, 'file_path' => $filePath];
+                   'password' => $usePassword];
         $stmt = $pdo->prepare($sql);
             if($stmt->execute($params)){}
         header('Location: index.php');
     }
 
 // Select command
-    $sql = "SELECT id, name FROM crud";
+    $sql = "SELECT id, name FROM logIn";
         $stmt = $pdo->query($sql);
 
         if (isset($_GET['show'])){
             $idUser = $_GET['show'];
-            $sql = "SELECT id, email, text, fname, file_path FROM crud WHERE id = '$idUser' Limit 1";
+            $sql = "SELECT id, email, password FROM logIn WHERE id = '$idUser' Limit 1";
             $statement = $pdo->query($sql);     
                 $show = $statement->fetch();
                     $useId = $show['id'];
                     $useEmail = $show['email'];
-                    $useComment = $show['text'];
-                    $useFile = $show['fname'];
-                    $useFpath = $show['file_path'];
+                    $usePassword = $show['password'];
                     $showInfo = true;
         }
 
 // Delete command
     if (isset($_GET['delete'])){
-        $sql = "DELETE FROM crud WHERE id = :id";
+        $sql = "DELETE FROM logIn WHERE id = :id";
         $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':id', $_GET['delete'], PDO::PARAM_INT);   
                 $stmt->execute();
@@ -82,14 +70,12 @@ require_once ('add/config.php');
 // Edit command
     if (isset($_GET['edit'])){
         $id = $_GET['edit'];
-        $sql = "SELECT id, name, email, text, fname, file_path FROM crud WHERE id = '$id'";
+        $sql = "SELECT id, name, email, password FROM logIn WHERE id = '$id'";
         $statement = $pdo->query($sql);     
             $edit = $statement->fetch();
                 $user = $edit['name'];
                 $email = $edit['email'];
-                $comment = $edit['text'];
-                $file = $edit['fname'];
-                $fpath = $edit['file_path'];
+                $password = $edit['password'];
                 $update = true;
     }
     
@@ -99,13 +85,13 @@ require_once ('add/config.php');
         $id = $_POST['id'];
         $updateName = ucfirst(formValidator($_POST['name']));
         $updateEmail = formValidator($_POST['email']);
-        $updateComment = formValidator($_POST['text']);
+        $updatePassword = md5 (formValidator($_POST['password']));
 
-        $sql = "UPDATE crud SET name = :name, email = :email, text = :text WHERE id = :id";
+        $sql = "UPDATE logIn SET name = :name, email = :email, password = :password WHERE id = :id";
             $stmt = $pdo->prepare($sql);                                  
             $stmt->bindParam(':name', $updateName, PDO::PARAM_STR);
             $stmt->bindParam(':email', $updateEmail, PDO::PARAM_STR);
-            $stmt->bindParam(':text', $updateComment, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $updatePassword, PDO::PARAM_STR);
             $stmt->bindParam(':id', $id , PDO::PARAM_INT);
                 $stmt->execute(); 
             header('Location: index.php');

@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 ini_set('display_errors', '1');
 
 $host = 'localhost';
-$db   = 'pinta';
+$db   = 'logIn';
 $dbUsername = 'root';
 $dbPassword = 'root';
 $charset = 'utf8';
